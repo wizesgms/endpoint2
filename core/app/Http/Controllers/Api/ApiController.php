@@ -44,7 +44,7 @@ class ApiController extends Controller
                 'status' => 0,
                 'msg' => 'INVALID_AGENT'
             ], 422);
-        } elseif ($data['agent_token'] !== $agentapi->agent_token) {
+        } elseif ($data['agent_token'] !== $agentapi->token) {
             return response()->json([
                 'status' => 0,
                 'msg' => 'INVALID_AGENT_TOKEN'
@@ -194,11 +194,17 @@ class ApiController extends Controller
             ], 200);
         }
 
-        $agents->balance = $agents->balance - $data['amount'];
-        $agents->save();
+        $agent_balance = $agents->balance + $data['amount'];
 
-        $player->balance = $player->balance + $data->amount;
-        $player->save();
+        DB::table('agents')->where('agentCode', $data['agent_code'])->update([
+            'balance' => $agent_balance,
+        ]);
+
+        $player_balance = $player->balance - $data->amount;
+
+        DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
+            'balance' => $player_balance,
+        ]);
 
         return response()->json([
             'status' => 1,
@@ -234,15 +240,21 @@ class ApiController extends Controller
         }
 
         $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
-        $agents->balance = $agents->balance + $data['amount'];
-        $agents->save();
+        $agent_balance = $agents->balance + $data['amount'];
 
-        $player->balance = $player->balance - $data->amount;
-        $player->save();
+        DB::table('agents')->where('agentCode', $data['agent_code'])->update([
+            'balance' => $agent_balance,
+        ]);
+
+        $player_balance = $player->balance - $data->amount;
+
+        DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
+            'balance' => $player_balance,
+        ]);
 
         return response()->json([
             'status' => 1,
-            'ErrorMsg' => 'SUCCESS',
+            'msg' => 'SUCCESS',
             'agent_balance' => $agents->balance,
             'user_balance' => $player->balance
         ], 200);
@@ -330,7 +342,7 @@ class ApiController extends Controller
             'GameType' => $data['game_type'],
             'LanguageCode' => 1,
             'Platform' => 0,
-            'Sign' => $this->generateSign($apis->apikey, date('YMdHms'), 'launchgame', $apis->secretkey),
+            'Sign' => $this->generateSign($apis->apikey, date('YMdHms'), 'getgamelist', $apis->secretkey),
             'RequestTime' => date('YMdHms')
         ];
 
@@ -338,7 +350,7 @@ class ApiController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => $apis->url . 'Seamless/LaunchGame',
+            CURLOPT_URL => $apis->url . 'Seamless/GetGameList',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
