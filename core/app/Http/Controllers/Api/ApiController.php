@@ -190,20 +190,20 @@ class ApiController extends Controller
 
         $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
 
-        if ($agents->balance < $data['amount']) {
+        if ($agents->balance < $player->balance) {
             return response()->json([
                 'status' => 0,
                 'msg' => 'INSUFFICIENT_AGENT_FUNDS'
             ], 200);
         }
 
-        $agent_balance = $agents->balance - $data['amount'];
+        $agent_balance = $agents->balance - $player->balance;
 
         DB::table('agents')->where('agentCode', $data['agent_code'])->update([
             'balance' => $agent_balance,
         ]);
 
-        $player_balance = $player->balance + $data['amount'];
+        $player_balance = $player->balance + $player->balance;
 
         DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
             'balance' => $player_balance,
@@ -235,7 +235,7 @@ class ApiController extends Controller
             ], 200);
         }
 
-        if ($player->balance < $data['amount']) {
+        if ($player->balance < $player->balance) {
             return response()->json([
                 'status' => 0,
                 'msg' => 'INSUFFICIENT_USER_FUNDS'
@@ -243,13 +243,13 @@ class ApiController extends Controller
         }
 
         $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
-        $agent_balance = $agents->balance + $data['amount'];
+        $agent_balance = $agents->balance + $player->balance;
 
         DB::table('agents')->where('agentCode', $data['agent_code'])->update([
             'balance' => $agent_balance,
         ]);
 
-        $player_balance = $player->balance - $data['amount'];
+        $player_balance = $player->balance - $player->balance;
 
         DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
             'balance' => $player_balance,
@@ -275,21 +275,14 @@ class ApiController extends Controller
                 ], 200);
             }
 
-            if ($player->balance < $data['amount']) {
-                return response()->json([
-                    'status' => 0,
-                    'msg' => 'INSUFFICIENT_USER_FUNDS'
-                ], 200);
-            }
-
             $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
-            $agent_balance = $agents->balance + $data['amount'];
+            $agent_balance = $agents->balance + $player->balance;
 
             DB::table('agents')->where('agentCode', $data['agent_code'])->update([
                 'balance' => $agent_balance,
             ]);
 
-            $player_balance = $player->balance - $data['amount'];
+            $player_balance = $player->balance - $player->balance;
 
             DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
                 'balance' => $player_balance,
