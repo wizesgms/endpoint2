@@ -275,6 +275,8 @@ class ApiController extends Controller
                 ], 200);
             }
 
+            $ball_bef = $player->balance;
+
             $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
             $agent_balance = $agents->balance + $player->balance;
 
@@ -295,9 +297,9 @@ class ApiController extends Controller
                     'agent_code' => $data['agent_code'],
                     'balance' => $agents->balance
                 ],
-                'user_list' => [
+                'user' => [
                     'user_code' => $player->userCode,
-                    'withdraw_amount' => $player->balance,
+                    'withdraw_amount' => $ball_bef,
                     'balance' => $player_balance
                 ]
             ], 200);
@@ -305,6 +307,7 @@ class ApiController extends Controller
             $players = DB::table('users')->where('balance', '>' , 0)->where('agentCode', $data['agent_code'])->get();
 
             foreach ($players as $player) {
+                $ball_bef = $player->balance;
                 $player_balance = $player->balance - $player->balance;
 
                 $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
@@ -328,7 +331,7 @@ class ApiController extends Controller
                 ],
                 'user_list' => [
                     'user_code' => $player->userCode,
-                    'withdraw_amount' => $player->balance,
+                    'withdraw_amount' => $ball_bef,
                     'balance' => $player_balance
                 ]
             ], 200);
