@@ -78,6 +78,9 @@ class ApiController extends Controller
             case 'provider_list':
                 return $this->provider_list($data);
                 break;
+            case 'user_withdraw_reset':
+                return $this->balanceWithdrawAll($data);
+                break;
             case 'game_list':
                 return $this->game_list($data);
                 break;
@@ -258,6 +261,78 @@ class ApiController extends Controller
             'agent_balance' => $agents->balance,
             'user_balance' => $player->balance
         ], 200);
+    }
+
+    function balanceWithdrawAll($data)
+    {
+        if (isset($data['user_code'])) {
+            $player = DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->first();
+
+            if (!$player) {
+                return response()->json([
+                    'status' => 0,
+                    'msg' => 'INVALID_USER'
+                ], 200);
+            }
+
+            if ($player->balance < $data['amount']) {
+                return response()->json([
+                    'status' => 0,
+                    'msg' => 'INSUFFICIENT_USER_FUNDS'
+                ], 200);
+            }
+
+            $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
+            $agent_balance = $agents->balance + $data['amount'];
+
+            DB::table('agents')->where('agentCode', $data['agent_code'])->update([
+                'balance' => $agent_balance,
+            ]);
+
+            $player_balance = $player->balance - $data['amount'];
+
+            DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
+                'balance' => $player_balance,
+            ]);
+
+            return response()->json([
+                'status' => 1,
+                'msg' => 'SUCCESS',
+                'agent_balance' => $agents->balance,
+                'user_balance' => $player->balance
+            ], 200);
+        } else {
+            $players = DB::table('users')->where('balance', '>' , 0)->where('agentCode', $data['agent_code'])->get();
+
+            foreach ($players as $player) {
+                $player_balance = $player->balance - $player->balance;
+
+                $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
+                $agent_balance = $agents->balance + $player->balance;
+
+                DB::table('agents')->where('agentCode', $data['agent_code'])->update([
+                    'balance' => $agent_balance,
+                ]);
+
+                DB::table('users')->where('balance', '>' , 0)->where('agentCode', $data['agent_code'])->update([
+                    'balance' => $player_balance,
+                ]);
+            }
+
+            return response()->json([
+                'status' => 1,
+                'msg' => 'SUCCESS',
+                'agent' => [
+                    'agent_code' => $data['agent_code'],
+                    'agent_code' => $agents->balance
+                ],
+                'user_list' => [
+                    'user_code' => $player->userCode,
+                    'withdraw_amount' => $player->balance,
+                    'balance' => $player_balance
+                ]
+            ], 200);
+        }
     }
 
     function launch_game($data)
