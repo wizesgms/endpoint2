@@ -136,8 +136,13 @@ class CallbackController extends Controller
                 }
                 $this->insertTrans($data);
 
-                $player->balance = $balance;
-                $player->save();
+                DB::table('users')->where('userCode', $data['MemberName'])->update([
+                    'balance' => $balance,
+                ]);
+
+                DB::table('users')->where('userCode', $data['MemberName'])->update([
+                    'balance' => $balance,
+                ]);
 
                 return response()->json([
                     'ErrorCode' => 0,
@@ -195,8 +200,9 @@ class CallbackController extends Controller
                     ]);
                 }
 
-                $player->balance = $balance;
-                $player->save();
+                DB::table('users')->where('userCode', $data['MemberName'])->update([
+                    'balance' => $balance,
+                ]);
 
                 return response()->json([
                     'ErrorCode' => 0,
@@ -245,8 +251,9 @@ class CallbackController extends Controller
                     ]);
                 }
 
-                $player->balance = $balance;
-                $player->save();
+                DB::table('users')->where('userCode', $data['MemberName'])->update([
+                    'balance' => $balance,
+                ]);
 
                 return response()->json([
                     'ErrorCode' => 0,
@@ -296,8 +303,9 @@ class CallbackController extends Controller
                     ]);
                 }
 
-                $player->balance = $balance;
-                $player->save();
+                DB::table('users')->where('userCode', $data['MemberName'])->update([
+                    'balance' => $balance,
+                ]);
 
                 return response()->json([
                     'ErrorCode' => 0,
@@ -345,8 +353,9 @@ class CallbackController extends Controller
                         'BeforeBalance' => 0
                     ]);
                 }
-                $player->balance = $balance;
-                $player->save();
+                DB::table('users')->where('userCode', $data['MemberName'])->update([
+                    'balance' => $balance,
+                ]);
 
                 return response()->json([
                     'ErrorCode' => 0,
@@ -395,8 +404,9 @@ class CallbackController extends Controller
                     ]);
                 }
 
-                $player->balance = $balance;
-                $player->save();
+                DB::table('users')->where('userCode', $data['MemberName'])->update([
+                    'balance' => $balance,
+                ]);
 
                 return response()->json([
                     'ErrorCode' => 0,
