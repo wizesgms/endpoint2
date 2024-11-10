@@ -136,13 +136,13 @@ class ApiController extends Controller
 
         $agents = DB::table('agents')->where('agentCode', $data['agent_code'])->first();
 
-        if (!$data['user_code']) {
+        if (!isset($data['user_code'])) {
             return response()->json([
                 'status' => 1,
                 'msg' => 'SUCCESS',
                 'agent' => [
                     'agent_code' => $data['agent_code'],
-                    'agent_code' => $agents->balance
+                    'balance' => $agents->balance
                 ]
             ], 200);
         }
