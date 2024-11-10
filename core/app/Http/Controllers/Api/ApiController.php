@@ -360,8 +360,8 @@ class ApiController extends Controller
 
         $postArrayss = [
             'OperatorCode' => $apis->apikey,
-            'MemberName' => $player->user_code,
-            'Password' => $player->user_code,
+            'MemberName' => $player->userCode,
+            'Password' => $player->userCode,
             'GameID' => $data['game_code'],
             'ProductID' => $data['provider_code'],
             'GameType' => $data['game_type'],
