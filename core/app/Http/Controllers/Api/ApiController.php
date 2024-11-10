@@ -200,7 +200,7 @@ class ApiController extends Controller
             'balance' => $agent_balance,
         ]);
 
-        $player_balance = $player->balance - $data->amount;
+        $player_balance = $player->balance - $data['amount'];
 
         DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
             'balance' => $player_balance,
@@ -246,7 +246,7 @@ class ApiController extends Controller
             'balance' => $agent_balance,
         ]);
 
-        $player_balance = $player->balance - $data->amount;
+        $player_balance = $player->balance - $data['amount'];
 
         DB::table('users')->where('userCode', $data['user_code'])->where('agentCode', $data['agent_code'])->update([
             'balance' => $player_balance,
