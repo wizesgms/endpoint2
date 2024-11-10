@@ -291,8 +291,15 @@ class ApiController extends Controller
             return response()->json([
                 'status' => 1,
                 'msg' => 'SUCCESS',
-                'agent_balance' => $agents->balance,
-                'user_balance' => $player->balance
+                'agent' => [
+                    'agent_code' => $data['agent_code'],
+                    'balance' => $agents->balance
+                ],
+                'user_list' => [
+                    'user_code' => $player->userCode,
+                    'withdraw_amount' => $player->balance,
+                    'balance' => $player_balance
+                ]
             ], 200);
         } else {
             $players = DB::table('users')->where('balance', '>' , 0)->where('agentCode', $data['agent_code'])->get();
@@ -317,7 +324,7 @@ class ApiController extends Controller
                 'msg' => 'SUCCESS',
                 'agent' => [
                     'agent_code' => $data['agent_code'],
-                    'agent_code' => $agents->balance
+                    'balance' => $agents->balance
                 ],
                 'user_list' => [
                     'user_code' => $player->userCode,
