@@ -213,7 +213,7 @@ class ApiController extends Controller
             'status' => 1,
             'msg' => 'SUCCESS',
             'agent_balance' => $agents->balance,
-            'user_balance' => $player->balance
+            'user_balance' => $player_balance
         ], 200);
     }
 
@@ -259,7 +259,7 @@ class ApiController extends Controller
             'status' => 1,
             'msg' => 'SUCCESS',
             'agent_balance' => $agents->balance,
-            'user_balance' => $player->balance
+            'user_balance' => $player_balance
         ], 200);
     }
 
